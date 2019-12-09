@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="jedi/master :: head (title = 'Jedi Project')"><title>...</title></head>
+
+<body>
+
+<!--<nav th:replace="fragment/nav :: AllMenu">...</nav>-->
+<div id="display">
+    <div class="alert alert-danger" th:if="${param.error}">Invalid username or password</div>
+    <div class="alert alert-primary" th:if="${param.logout}">You have been logged out</div>
+    <div class="container text-center">
+        <div class="display-4 mx-auto my-2">Please login</div>
+        <div class="mx-auto" style="max-width: 400px;">
+        <th:block th:replace="fragment/form::form-auto (action = ${action})" >...</th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:remove="all">
+    <th:block th:fragment="form-auto (action)">
+        <div class="container p-2" th:with="actionHandler = ${#info.getActionHandler(formObject, action)}">
+            <form th:if="${actionHandler}"
+                  th:action="@{${actionHandler.Url()}}"
+                  th:method="${actionHandler.Method()}"
+                  th:object="${formObject}">
+                <table class="user-input table">
+                    <th:block th:each="field : ${#info.getAllSettableFieldOf(formObject)}">
+                        <tr th:replace="fragment/form::__${field.type}__  (field = ${field})">...</tr>
+                    </th:block>
+                </table>
+                <div class="float-right">
+                    <th:block th:with="deleteHandler = ${#info.getActionHandler(formObject, #info.DELETE)}">
+                        <a th:if="${deleteHandler}" role="button" class="btn btn-outline-danger"
+                           th:href="@{${deleteHandler.Url()}(id=${formObject.id}, confirmed=true)}"
+                           th:text="${deleteHandler.Label()}">...</a>
+                    </th:block>
+                    <button role="button" class="btn btn-warning" type="reset">Reset</button>
+                    <button role="button" class="btn btn-success" type="submit" th:text="${actionHandler.Label()}">Submit</button>
+                </div>
+            </form>
+        </div>
+    </th:block>
+</th:block>
+<!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
+<th:block th:remove="all">
+
+
+    <th:block th:fragment="java-lang-String (field)">
+        <tr class="user-input java-lang-String" th:classappend="${'field-'+field.name}">
+            <td class="user-input label">
+            <label class="label" th:text="${field.getLabel()?:field.getName()}">Label</label></td>
+            <td class="user-input input"><th:block th:replace="::input-text-auto (field=${field})">...</th:block></td>
+        </tr>
+    </th:block>
+
+
+    <th:block th:fragment="long (field)">
+        <th:block th:if="${field.id}">
+            <th:block th:replace="::input-hidden-auto (field=${field})">...</th:block>
+        </th:block>
+        <tr th:unless="${field.id}" class="user-input java-lang-String" >
+            <td>
+                <label class="label" th:text="${field.getLabel()?:field.getName()}">Label</label></td>
+            <td><th:block th:replace="::input-text-auto (field=${field})">...</th:block></td>
+        </tr>
+    </th:block>
+
+</th:block>
+
+<th:block th:remove="all">
+    <th:block th:fragment="input-text-auto (field)">
+        <input th:field="*{__${field.name}__}" th:placeholder="${field.placeHolder}" th:type="${field.secret?'password':'text'}"
+           class="formcontrol input input-text input-auto"
+           th:classappend="${'input-name-'+field.name}"
+           th:required="${field.notNull or field.notEmpty or field.notBlank}"/>
+    </th:block>
+
+    <th:block th:fragment="input-hidden-auto (field)">
+        <input type="hidden" class="formcontrol" th:field="*{__${field.name}__}"/>
+    </th:block>
+
+    <th:block th:fragment="input-radio-auto (field, collection)">
+        <th:block th:each="choice : ${collection}">
+            <div class="form-check input-radio-group input-auto input">
+                    <input class="formcontrol input-radio form-check-input" type="radio"
+                        th:field="*{__${field.name}__}"
+                        th:id="${field.name + '-' + choice.id}"
+                        th:value="${choice.id}"/>
+                    <label class="form-check-label"
+                        th:for="${field.name+'-'+choice.id}"
+                        th:text="${choice.toString()}">...</label>
+            </div>
+        </th:block>
+
+    </th:block>
+</th:block>
+
+
+
+
+
+
+
+
+</body>
+</html>
